@@ -3,6 +3,7 @@
 
 #include "Student.h"
 #include <string>
+#include <ostream>
 
 class AttendanceSession {
 private:
@@ -11,6 +12,7 @@ private:
     std::string date;
     std::string startTime;
     std::string attendanceStatus[100];
+    std::string getAttendanceStatus(int index) const;
     int totalStudents;
     int durationMinutes;
 
@@ -32,6 +34,8 @@ public:
     void markAttendance(const Student students[], int studentCount);
     void displayAttendance(const Student students[], int studentCount) const;
     void displaySummary(int studentCount) const;
+    void loadAttendanceStatus(int index, std::string status);
+    void saveAttendanceToFile(std::ostream& file, int studentCount) const;
 
     // File format
     std::string toFileString() const;
