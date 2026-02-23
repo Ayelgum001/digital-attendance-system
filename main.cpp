@@ -31,7 +31,9 @@ int main() {
         cout << "2. View Students\n";
         cout << "3. Create Session\n";
         cout << "4. View Sessions\n";
-        cout << "5. Exit\n";
+        cout << "5. Mark Attendance\n";
+        cout << "6. View Session Attendance\n";
+        cout << "7. Exit\n";
         cout << "Enter choice: ";
 
         cin >> choice;
@@ -59,7 +61,39 @@ int main() {
             viewSessions();
             break;
 
-        case 5:
+       case 5:
+            if (sessionCount == 0) {
+                cout << "No sessions available.\n";
+                break;
+            }
+            viewSessions();
+            cout << "Select session number: ";
+            int sIndex;
+            cin >> sIndex;
+
+            if (sIndex < 1 || sIndex > sessionCount) {
+                cout << "Invalid session.\n";
+                break;
+            }
+
+            sessions[sIndex - 1].markAttendance(students, studentCount);
+            break;
+
+        case 6:
+            viewSessions();
+            cout << "Select session number: ";
+            cin >> sIndex;
+
+            if (sIndex < 1 || sIndex > sessionCount) {
+                cout << "Invalid session.\n";
+                break;
+            }
+
+            sessions[sIndex - 1].displayAttendance(students, studentCount);
+            sessions[sIndex - 1].displaySummary(studentCount);
+            break;
+
+        case 7:
             saveStudentsToFile();
             saveSessionsToFile();
             cout << "Exiting...\n";
@@ -69,7 +103,7 @@ int main() {
             cout << "Invalid option.\n";
         }
 
-    } while (choice != 5);
+    } while (choice != 7);
 
     return 0;
 }
