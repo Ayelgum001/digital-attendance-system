@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include "Student.h"
 #include "AttendanceSession.h"
 
@@ -21,6 +22,11 @@ void saveStudentsToFile();
 void createSession();
 void viewSessions();
 void saveSessionsToFile();
+void loadSessionsFromFile();
+void loadStudentsFromFile();
+void loadStudentsFromFile();
+   
+
 
 int main() {
     int choice;
@@ -229,15 +235,63 @@ void viewSessions() {
 
 void saveSessionsToFile() {
 
-    std::ofstream file("sessions.txt");
-
-    if (!file) {
-        std::cout << "Error opening sessions file.\n";
-        return;
-    }
-
     for (int i = 0; i < sessionCount; i++) {
-        file << sessions[i].toFileString() << std::endl;
+
+        string filename = "session_" + sessions[i].getSessionID() + ".txt";
+        ofstream file(filename, ios::out);
+
+        if (!file) {
+            cout << "Error creating session file.\n";
+            continue;
+        }
+
+        // Save session details
+        file << sessions[i].toFileString() << endl;
+
+        // Save attendance
+        sessions[i].saveAttendanceToFile(file, studentCount);
+
+        file.close();
+    }
+}
+
+void loadSessionsFromFile() {
+
+    ifstream file("sessions.txt");
+
+    if (!file) return;
+
+    string line;
+
+    while (getline(file, line)) {
+
+        if (studentCount >= MAX_STUDENTS) break;
+        if (sessionCount >= MAX_SESSIONS) break;
+
+        stringstream ss(line);
+
+        string id, code, date, time, durationStr;
+
+        getline(ss, id, ',');
+        getline(ss, code, ',');
+        getline(ss, date, ',');
+        getline(ss, time, ',');
+        getline(ss, durationStr, ',');
+
+        int duration = stoi(durationStr);
+
+        sessions[sessionCount] =
+            AttendanceSession(id, code, date, time, duration);
+
+        int i = 0;
+        string status;
+
+        while (getline(ss, status, ',')) {
+            sessions[sessionCount].loadAttendanceStatus(i, status);
+            i++;
+        }
+
+        sessionCount++;
     }
 
     file.close();
