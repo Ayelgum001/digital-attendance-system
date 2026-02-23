@@ -7,6 +7,7 @@ AttendanceSession::AttendanceSession() {
     courseCode = "";
     date = "";
     startTime = "";
+    totalStudents = 0;
     durationMinutes = 0;
 }
 
@@ -19,6 +20,7 @@ AttendanceSession::AttendanceSession(std::string id,
     courseCode = code;
     date = d;
     startTime = time;
+    totalStudents = 0;
     durationMinutes = duration;
 }
 
@@ -52,12 +54,19 @@ void AttendanceSession::display() const {
 }
 
 std::string AttendanceSession::toFileString() const {
+
     std::stringstream ss;
+
     ss << sessionID << ","
        << courseCode << ","
        << date << ","
        << startTime << ","
        << durationMinutes;
+
+    for (int i = 0; i < totalStudents; i++) {
+        ss << "," << attendanceStatus[i];
+    }
+
     return ss.str();
 }
 void AttendanceSession::markAttendance(const Student students[], int studentCount) {
@@ -92,6 +101,7 @@ void AttendanceSession::markAttendance(const Student students[], int studentCoun
             }
         }
     }
+    
 
     std::cout << "\nAttendance recorded successfully.\n";
 }
@@ -111,6 +121,7 @@ void AttendanceSession::displayAttendance(const Student students[], int studentC
     }
 }
 
+
 void AttendanceSession::displaySummary(int studentCount) const {
 
     int present = 0, absent = 0, late = 0;
@@ -125,4 +136,22 @@ void AttendanceSession::displaySummary(int studentCount) const {
     std::cout << "Present: " << present << std::endl;
     std::cout << "Absent : " << absent << std::endl;
     std::cout << "Late   : " << late << std::endl;
+}
+
+void AttendanceSession::loadAttendanceStatus(int index, std::string status) {
+    attendanceStatus[index] = status;
+    if (index + 1 > totalStudents) {
+        totalStudents = index + 1;
+    }
+}
+
+void AttendanceSession::saveAttendanceToFile(std::ostream& file, int studentCount) const {
+    int limit = studentCount < 100 ? studentCount : 100;
+    for (int i = 0; i < limit; i++) {
+        file << attendanceStatus[i];
+        if (i < limit - 1) {
+            file << ",";
+        }
+    }
+    file << std::endl;
 }
