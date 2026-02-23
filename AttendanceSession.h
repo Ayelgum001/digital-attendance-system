@@ -1,6 +1,7 @@
 #ifndef ATTENDANCESESSION_H
 #define ATTENDANCESESSION_H
 
+#include "Student.h"
 #include <string>
 
 class AttendanceSession {
@@ -9,6 +10,8 @@ private:
     std::string courseCode;
     std::string date;
     std::string startTime;
+    std::string attendanceStatus[100];
+    int totalStudents;
     int durationMinutes;
 
 public:
@@ -26,6 +29,9 @@ public:
 
     // Display
     void display() const;
+    void markAttendance(const Student students[], int studentCount);
+    void displayAttendance(const Student students[], int studentCount) const;
+    void displaySummary(int studentCount) const;
 
     // File format
     std::string toFileString() const;
